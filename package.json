@@ -1,0 +1,21 @@
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "Promise study notes",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wujihua118/Promise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wujihua118/Promise/issues"
+  },
+  "homepage": "https://github.com/wujihua118/Promise#readme"
+}
