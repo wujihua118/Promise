@@ -108,3 +108,95 @@ async function request () {
   }
 }
 ```
+
+#### Promise 怎么用？
+##### API
+- Promise 构造函数 `Promise(excutor) {}`
+  - `excutor` 函数：执行器 `(resolve, reject) => {}`
+  - `resolve` 函数：内部定义成功时我们调用的函数 `value => {}`
+  - `reject` 函数：内部定义失败时我们定义的函数 `reason => {}`
+> excutor 会在 Promise 内部立即同步回调，异步操作在执行器中执行
+
+- `Promise.prototype.then` 方法：`(onResolved, onRejected) => {}`
+  - `onResolved` 函数：成功的回调函数 `value => {}`
+  - `onRejected` 函数：失败的回调函数 `reason => {}`
+> 指定用于得到成功 value 的成功回调和用于得到失败 reason 的失败回调
+
+- `Promise.then.catch` 方法：`(onRejected) => {}`
+  - `onRejected` 函数：失败的回调函数 `(reason) => {}`
+> then 的语法糖，相当于 `then(undefined, onRejected)`
+
+```javascript
+new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('successData')
+    // resolve('errorData')
+  }, 1000)
+}).then(
+  value => {
+    console.log('onResolved', value)  // onResolved successData
+  },
+  reason => {
+    console.log('onRejected', reason)
+  }
+)
+```
+
+- `Promise.resolve()` 方法：`(value) => {}`
+  - `value`：成功的数据或者Promise对象
+> 返回一个成功 / 失败的 promise 对象
+
+`Promise.reject()` 方法：`(reason) => {}`
+  - `value`：失败的原因
+> 返回一个失败的 promise 对象
+
+```javascript
+// 产生一个成功值为1的promise对象
+const promsie1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(1)
+  }, 1000)
+})
+const promise2 = Promise.resolve(1)
+const promise3 = Promise.reject(2)
+promise1.then(value => {console.log(value)})  // 1
+promise2.then(value => {console.log(value)})  // 1
+// promise3.then(null, reason => {console.log(reason)})
+promise3.catch(reason => {console.log(reason)})  // 2
+```
+
+`Promise.all()` 方法：`(promises) => {}`
+  - `promises`：包含n个 promise 的数组
+> 返回一个新的 promise 对象，只有所有的 promise 都成功才能成功，只要有一个失败了就直接失败
+
+```javascript
+...
+const pAll = Promise.all([promise1, promise2, promise3])
+// const pAll = Promise.all([promise1, promise2])
+pAll.then(
+  values => {
+    console.log('all onResolved', values) // promise3失败，不执行
+  },
+  reason => {
+    console.log('all onRejected', reason)  // all onRejected 3
+  }
+)
+```
+
+`Promise.race()` 方法：`(promises) => {}`
+  - `promises`：包含n个 promise 的数组
+> 返回一个新的 promise 对象，最快完成的 promise 的结果状态就是最终的结果状态
+
+```javascript
+...
+const pRace = Promise.all([promise1, promise2, promise3])
+// const pAll = Promise.all([promise1, promise2])
+pAll.then(
+  value => {
+    console.log('race onResolved', value) // 最快完成的结果即最终结果
+  },
+  reason => {
+    console.log('race onRejected', reason)
+  }
+)
+```
